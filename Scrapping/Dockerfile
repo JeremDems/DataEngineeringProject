@@ -8,4 +8,4 @@ COPY . .
 RUN  pip install --upgrade pip && pip install -r requirements.txt
 
 
-CMD ["python", "scrap_tennis.py"]
+CMD ["python", "tennis_scrapping.py"]

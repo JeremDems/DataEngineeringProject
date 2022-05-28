@@ -7,11 +7,9 @@ from bs4 import BeautifulSoup
 import pandas as pd 
 import pymongo
 
-url = "https://fr.tennisstats247.com/classements/"
-
 
 #----------------------------Scrapping------------------------------------------
-def scrapPlayer(urll):
+def scrap_player(urll):
 
     #Instanciation des listes 
     nameColumnWinrateTable = []
@@ -20,7 +18,7 @@ def scrapPlayer(urll):
     scoreTable = []
 
     #Récupère et parse la nouvelle page
-    response = requests.get(url)
+    response = requests.get(urll)
     soup = BeautifulSoup(response.content, 'html.parser')
 
     #Récupère le nom des joueurs
@@ -99,7 +97,7 @@ def main():
         # Récupère dataframes pour tous les joueurs de la listes et les ajoutes dans la collection
     list_player = []
     for urls in playerLinkTable:
-        player = scrapPlayer(urls)
+        player = scrap_player(urls)
         list_player.append(player)
         dic_player = player.to_dict(orient='records')
         collection.insert_many(dic_player)
