@@ -1,0 +1,6 @@
+requests
+pandas
+pymongo
+bs4
+lxml
+dash

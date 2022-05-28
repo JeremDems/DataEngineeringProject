@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  tennis_mongo:
+    image: mongo
+    container_name: tennis_mongo
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./data/mongo:/data/db
+    ports:
+      - 27017:27017
+  tennis_scraping:
+    build: ./Scrapping
+    container_name: tennis_scraping
+  dashboard:
+    build: ./Dashboard
+    restart: always
+    container_name: dashboard
+    ports:
+        - 8050:8050
