@@ -12,24 +12,23 @@ import pandas as pd
 # Connexion avec Mongodb
 client = pymongo.MongoClient('tennis_mongo:27017')
 database = client['Tennis']
-collection = database['Player']
+collection1 = database['Player1']
+collection2 = database['Player2']
 
 def generate_page():
     # Création de df pour l'affichage des données
 
-    data1 = pd.DataFrame(list(collection.find({"Classement":{'$gte':10}})))[["Player","Titres", "V", "D", "Année"]]
-    data2 = pd.DataFrame(list(collection.find({"Victoire":{'$gt':15}})))[["Surface", "Victoires","Défaites"]]
-    data3 = pd.DataFrame(list(collection.find({})))[["VD", "DD", "VTB","DTB"]]
-    data4 = pd.DataFrame(list(collection.find({})))[["Classement", "V", "D"]]
+    data1 = pd.DataFrame(list(collection1.find({"Classement":{'$gte':10}})))[['Player', 'Année', 'Titres', 'V', 'D', 'VD', 'DD', 'VTB', 'DTB', 'VG', 'DG']]
+    data2 = pd.DataFrame(list(collection2.find({"Victoire":{'$gt':15}})))[["Surface", "Victoires","Défaites"]]
 
 
     # Création de graphique pour l'affichage des données
-    bar1 = px.bar(data1, x = "player", y = "V", barmode="group") 
-    bar2 = px.bar(data1, x = "player", y = "D", barmode="group") 
-    bar3 = px.bar(data2, x = "player", y = "VD", barmode="group", facet_col="Season") 
-    bar4 = px.bar(data2, x = "player", y = "DD", barmode="group", facet_col="Season") 
-    bar5 = px.bar(data2, x = "player", y = "VTB", barmode="group", facet_col="Season") 
-    bar6 = px.bar(data2, x = "player", y = "DTB", barmode="group", facet_col="Season") 
+    bar1 = px.bar(data2, x = "player", y = "V", barmode="group") 
+    bar2 = px.bar(data2, x = "player", y = "D", barmode="group") 
+    bar3 = px.bar(data1, x = "player", y = "VD", barmode="group", facet_col="Season") 
+    bar4 = px.bar(data1, x = "player", y = "DD", barmode="group", facet_col="Season") 
+    bar5 = px.bar(data1, x = "player", y = "VTB", barmode="group", facet_col="Season") 
+    bar6 = px.bar(data1, x = "player", y = "DTB", barmode="group", facet_col="Season") 
 
     return html.Div(style={'font-family' : 'Trebuchet MS, sans-serif'}, children=[
         html.Div( id="header", children=[
