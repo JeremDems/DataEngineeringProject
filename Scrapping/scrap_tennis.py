@@ -16,7 +16,7 @@ def scrap_player1(urll):
     scoreTable = []
 
     #Récupère et parse la nouvelle page
-    response = requests.get(urll)
+    response = requests.get(urll, timeout=30)
     soup = BeautifulSoup(response.content, 'html.parser')
 
     #Récupère le nom des joueurs
@@ -27,7 +27,7 @@ def scrap_player1(urll):
     Table2 = soup.find(class_ = 'gridAlternate careerStats')
     for nameColumn in Table2.find_all('span'):
         nameColumn = nameColumn.text
-        nameColumnTable.append(str(nameColumn))          #Création des colonnes de la dataframe
+        nameColumnTable.append(str(nameColumn).replace(' ','').replace('\n', ''))          #Création des colonnes de la dataframe
     df3 = pd.DataFrame(columns = nameColumnTable)
     df4 = pd.DataFrame(columns = nameColumnTable)
     df5 = pd.DataFrame(columns = nameColumnTable)
@@ -48,40 +48,52 @@ def scrap_player1(urll):
         else :
             continue
     df3 = pd.concat([df3,df4,df5])
+    toNumeric = ['Classement', 'Titres', 'V', 'D', 'VD', 'DD', 'VTB', 'DTB', 'VG', 'DG']
+    for i in toNumeric:
+        df3[i] = pd.to_numeric(df3[i], errors = 'coerce')
+    indexNames = df3[ df3['Année'] == '2019' ].index 
+    df3.drop(indexNames , inplace=True)
+    indexNames = df3[ df3['Année'] == '2018' ].index 
+    df3.drop(indexNames , inplace=True)
+    indexNames = df3[ df3['Année'] == '2019' ].index 
+    df3.drop(indexNames , inplace=True)
     return(df3)
 
 
 
-def scrap_player2(urll):
+# def scrap_player2(urll):
 
-    #Instanciation des listes 
-    nameColumnWinrateTable = []
-    winrateTable = []
+#         #Instanciation des listes 
+#     nameColumnWinrateTable = []
+#     winrateTable = []
 
-    #Récupère et parse la nouvelle page
-    response = requests.get(urll)
-    soup = BeautifulSoup(response.content, 'html.parser')
+#     #Récupère et parse la nouvelle page
+#     response = requests.get(urll)
+#     soup = BeautifulSoup(response.content, 'html.parser')
+
+#     namePlayer = soup.find('h1').text  
     
-    #Ici nous crééons une dataframe dans laquelle nous auront le nombre de victoires/défaites par rapport à la surface du terrain
-    Table1 = soup.find(class_ = 'gridAlternate winLoss')
-    if type(Table1) == type(None):
-        winrate = 'pas de stat de winrate' #Dans le cas où il n'y a pas de données, cela empêchait de faire fonctionner la fonction str(winrate)
-        winrateTable.append(winrate)
-    else :
-        for nameColumnWinrate in Table1.find_all('th'):
-            nameColumnWinrate = nameColumnWinrate.text
-            nameColumnWinrateTable.append(nameColumnWinrate)
-        df1 = pd.DataFrame(columns = nameColumnWinrateTable)
-        winrate = Table1.find_all('td')
-        winrate = str(winrate).replace('<td>','').replace('</td>','').split(',')
-        winrate = list(winrate)
-        length = len(df1)
-        df1.loc[length] = winrate[:3]   
-        if len(winrate) == 6:
-            df2 = pd.DataFrame(columns = nameColumnWinrateTable)    #Obligation de créer une dataframe par surface afin de pouvoir les remplir correctement
-            df2.loc[length] = winrate[3:]
-        df1 = pd.concat([df1,df2])  
-    return(df1)
+#     #Ici nous crééons une dataframe dans laquelle nous auront le nombre de victoires/défaites par rapport à la surface du terrain
+#     Table1 = soup.find(class_ = 'gridAlternate winLoss') 
+#     if type(Table1) == type(None):
+#         winrateTable = 'pas de statistiques' #Dans le cas où il n'y a pas de données, cela empêchait de faire fonctionner la fonction str(winrate)
+#     else :
+#         for nameColumnWinrate in Table1.find_all('th'):
+#             nameColumnWinrate = nameColumnWinrate.text
+#             nameColumnWinrateTable.append(nameColumnWinrate) 
+#         nameColumnWinrateTable.append('Player')
+#         print (nameColumnWinrateTable)
+#         df1 = pd.DataFrame(columns = nameColumnWinrateTable)
+#         winrateTable = Table1.find_all('td')
+#         winrateTable = str(winrateTable).replace('<td>','').replace('</td>','').split(',')
+#         winrateTable = list(winrateTable)
+#         length = len(df1)
+#         df1.loc[length] = winrateTable[:4]  
+#         df1['Player'] = str(namePlayer).replace('\n','')
+#         toNumeric = ['Victoires', 'Défaites']
+#         for i in toNumeric:
+#             df1[i] = pd.to_numeric(df1[i], errors = 'coerce') 
+#     return(df1)
 
 
 
@@ -108,16 +120,17 @@ def main():
         playerLinkTable.append(playerLink.get('href'))
     
         # Récupère dataframes pour tous les joueurs de la listes et les ajoutes dans la collection
-    list_player = []
+    list_player1 = []
+    # list_player2 = []
     for urls in playerLinkTable:
         player1 = scrap_player1(urls)
-        list_player.append(player1)
+        list_player1.append(player1)
         dic_player1 = player1.to_dict(orient='records')
         collection1.insert_many(dic_player1)
-        player2 = scrap_player2(urls)
-        list_player.append(player2)
-        dic_player2 = player2.to_dict(orient='records')
-        collection2.insert_many(dic_player2)
+        # player2 = scrap_player2(urls)
+        # list_player2.append(player2)
+        # dic_player2 = player2.to_dict(orient='records')
+        # collection2.insert_many(dic_player2)
 
 if __name__ == '__main__':
     main()
