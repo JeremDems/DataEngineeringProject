@@ -39,7 +39,7 @@ def scrap_player1(urll):
         scoreTable.append(str(score).replace('\n',''))
         if len(scoreTable) == 12:                       #Récupération des données de la dataframe, petit problème observé quant à la mise en forme
             df3.loc[length] = scoreTable 
-            scoreTable.append(str(namePlayer).replace('\n',''))                                #des données récupérés donc seulement sur l'année en cours
+            scoreTable.append(str(namePlayer).replace('\n',''))            #des données récupérés donc sur les trois dernières années
         if len(scoreTable) == 24:
             df4.loc[length] = scoreTable[12:]
             scoreTable.append(str(namePlayer).replace('\n',''))
@@ -51,11 +51,11 @@ def scrap_player1(urll):
     toNumeric = ['Classement', 'Titres', 'V', 'D', 'VD', 'DD', 'VTB', 'DTB', 'VG', 'DG']
     for i in toNumeric:
         df3[i] = pd.to_numeric(df3[i], errors = 'coerce')
-    indexNames = df3[ df3['Année'] == '2019' ].index 
+    indexNames = df3[ df3['Année'] == '2019' ].index     #Suppression des années 2017 à 2019 car produisant des graphiques non voulues sur le dashboard
     df3.drop(indexNames , inplace=True)
     indexNames = df3[ df3['Année'] == '2018' ].index 
     df3.drop(indexNames , inplace=True)
-    indexNames = df3[ df3['Année'] == '2019' ].index 
+    indexNames = df3[ df3['Année'] == '2017' ].index 
     df3.drop(indexNames , inplace=True)
     return(df3)
 
