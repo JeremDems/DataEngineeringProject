@@ -10,7 +10,7 @@ Ce projet a pour but de récupérer des données sur internet afin de les affich
 
 ### **Récupération et lancement du projet**
 
-Le projet est à récupérer sur Git (https://git-scm.com/), il vous faudra le cloner sur votre ordinateur (par défaut dans les documents) afin de l'utiliser
+Le projet est à récupérer sur Git (https://github.com/JeremDems/DataEngineeringProject), il vous faudra le cloner sur votre ordinateur (par défaut dans les documents) afin de l'utiliser
 
 Pour lancer le projet, ouvrez votre shell et rendez-vous sur le répertoire courant du projet (dans notre cas /DataEngineeringProject) via la commande 'cd'. Ensuite tapez "docker-compose up --build" (sur votre shell également), vérifiez que le répertoire "data" sur la racine du projet n'existe pas pour le faire tourner, sinon supprimez-le avant de lancer le docker-compose up. 
 Pour se faire, vous aurez besoin d'installer docker (si cela n'est pas fait), qui nous permettra la création de l'image (packages, version de python) qui assurera le bon déroulement de l'application
